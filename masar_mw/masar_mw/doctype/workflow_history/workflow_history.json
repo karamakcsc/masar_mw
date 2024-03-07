@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-02-29 15:52:02.376722",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "wf_parent",
+  "wf_creation",
+  "wf_status",
+  "docname",
+  "duration",
+  "stage_start_time",
+  "stage_end_time",
+  "column_break_qiim",
+  "wf_modified_by",
+  "wf_modified",
+  "owner_user",
+  "ref_doctype",
+  "wf_from",
+  "wf_to",
+  "action"
+ ],
+ "fields": [
+  {
+   "fieldname": "docname",
+   "fieldtype": "Link",
+   "label": "Doc Name",
+   "options": "Sales Acquisition"
+  },
+  {
+   "fieldname": "column_break_qiim",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "owner_user",
+   "fieldtype": "Data",
+   "label": "Owner User"
+  },
+  {
+   "fieldname": "ref_doctype",
+   "fieldtype": "Data",
+   "label": "Reference Doctype  "
+  },
+  {
+   "fieldname": "wf_from",
+   "fieldtype": "Data",
+   "label": "Workflow From"
+  },
+  {
+   "fieldname": "wf_to",
+   "fieldtype": "Data",
+   "label": "Workflow To"
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Duration",
+   "label": "Duration"
+  },
+  {
+   "fieldname": "wf_creation",
+   "fieldtype": "Datetime",
+   "label": "Creation"
+  },
+  {
+   "fieldname": "wf_status",
+   "fieldtype": "Data",
+   "label": "Docstatus"
+  },
+  {
+   "fieldname": "wf_modified_by",
+   "fieldtype": "Data",
+   "label": "Modified By"
+  },
+  {
+   "fieldname": "wf_modified",
+   "fieldtype": "Datetime",
+   "label": "Modified"
+  },
+  {
+   "fieldname": "wf_parent",
+   "fieldtype": "Link",
+   "label": "Parent",
+   "options": "Version"
+  },
+  {
+   "fieldname": "stage_start_time",
+   "fieldtype": "Datetime",
+   "label": "Stage Start Time"
+  },
+  {
+   "fieldname": "stage_end_time",
+   "fieldtype": "Datetime",
+   "label": "Stage End Time"
+  },
+  {
+   "fieldname": "action",
+   "fieldtype": "Data",
+   "label": "Action"
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-03-05 16:29:37.922801",
+ "modified_by": "Administrator",
+ "module": "Masar Mw",
+ "name": "Workflow History",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

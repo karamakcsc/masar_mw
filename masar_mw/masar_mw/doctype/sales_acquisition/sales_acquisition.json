@@ -1,0 +1,302 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{item_name}-{operator_name}",
+ "creation": "2024-02-25 12:06:56.193764",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "doc_ref",
+  "item_code",
+  "item_name",
+  "customer",
+  "operator_name",
+  "operator_country",
+  "email",
+  "phone",
+  "sp_service_name",
+  "price_point",
+  "frequency",
+  "column_break_wsvn",
+  "sales_person",
+  "posting_date",
+  "expected_closing",
+  "last_stage_update",
+  "rating",
+  "mw_revenue_share",
+  "telco_revenue_share",
+  "sp_revenue",
+  "contract",
+  "introductory_email_sent",
+  "section_break_mbal",
+  "column_break_qtlr",
+  "status",
+  "column_break_fefy",
+  "amended_from",
+  "section_break_kyrg",
+  "wf_load",
+  "created_time",
+  "column_break_hidd",
+  "workflow_history_ref",
+  "wf_refresh",
+  "is_saved"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "operator_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Operator Name",
+   "options": "Operator",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "operator_name.country",
+   "fieldname": "operator_country",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Operator Country",
+   "read_only": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "sp_service_name",
+   "fieldtype": "Data",
+   "label": "SP - Service Name"
+  },
+  {
+   "fieldname": "price_point",
+   "fieldtype": "Float",
+   "label": "Price Point"
+  },
+  {
+   "default": "Daily",
+   "fieldname": "frequency",
+   "fieldtype": "Select",
+   "label": "Frequency",
+   "options": "\nDaily\nWeekly\nMonthly"
+  },
+  {
+   "fieldname": "column_break_wsvn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_person",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Sales Person",
+   "options": "Sales Person",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expected_closing",
+   "fieldtype": "Date",
+   "label": "Expected Closing"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Now",
+   "fieldname": "last_stage_update",
+   "fieldtype": "Datetime",
+   "label": "Last Stage Update",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mw_revenue_share",
+   "fieldtype": "Percent",
+   "label": "MW Revenue Share"
+  },
+  {
+   "fieldname": "telco_revenue_share",
+   "fieldtype": "Percent",
+   "label": "Telco Revenue Share"
+  },
+  {
+   "fieldname": "sp_revenue",
+   "fieldtype": "Percent",
+   "label": "SP Revenue Share"
+  },
+  {
+   "fieldname": "contract",
+   "fieldtype": "Attach",
+   "label": "Contract"
+  },
+  {
+   "default": "0",
+   "fieldname": "introductory_email_sent",
+   "fieldtype": "Check",
+   "label": "Introductory Email Sent"
+  },
+  {
+   "fieldname": "section_break_mbal",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Sales Acquisition",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "rating",
+   "fieldtype": "Rating",
+   "label": "Rating",
+   "options": "3"
+  },
+  {
+   "fieldname": "doc_ref",
+   "fieldtype": "Data",
+   "label": "Doc Ref.",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fefy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qtlr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nInitiation of Discussion\nDiscussion (Acquisition)\nUnder Operator Approval\nUnder SP Approval\nApproved",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "wf_load",
+   "fieldtype": "Data",
+   "label": "Workflow Load",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_kyrg",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "wf_refresh",
+   "fieldtype": "Data",
+   "label": "Workflow Refresh",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Now",
+   "fieldname": "created_time",
+   "fieldtype": "Datetime",
+   "label": "Created Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hidd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "workflow_history_ref",
+   "fieldtype": "Link",
+   "label": "Workflow History Ref",
+   "options": "Workflow History"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_saved",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is saved"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-03-05 15:51:46.332456",
+ "modified_by": "Administrator",
+ "module": "Masar Mw",
+ "name": "Sales Acquisition",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

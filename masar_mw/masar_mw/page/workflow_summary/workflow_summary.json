@@ -1,0 +1,23 @@
+{
+ "content": null,
+ "creation": "2024-03-06 12:51:22.846757",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2024-03-06 12:51:22.846757",
+ "modified_by": "Administrator",
+ "module": "Masar Mw",
+ "name": "workflow-summary",
+ "owner": "Administrator",
+ "page_name": "workflow-summary",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Workflow Summary"
+}
