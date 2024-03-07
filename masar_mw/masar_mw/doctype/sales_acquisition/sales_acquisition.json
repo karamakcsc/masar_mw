@@ -179,6 +179,7 @@
   {
    "fieldname": "rating",
    "fieldtype": "Rating",
+   "in_list_view": 1,
    "label": "Rating",
    "options": "3"
   },
@@ -259,7 +260,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-05 15:51:46.332456",
+ "modified": "2024-03-07 10:52:05.191196",
  "modified_by": "Administrator",
  "module": "Masar Mw",
  "name": "Sales Acquisition",
