@@ -41,6 +41,7 @@ def get_data(filters):
           SELECT 
             tsa.name AS `Document Name`,
             tsa.posting_date AS `Posting Date`,
+            twt.allowed AS `User Role`,
             tsa.item_name AS `Item Name`,
             tsa.operator_name AS `Operator Name`,
             tsa.customer AS `Customer Name`,
@@ -48,10 +49,12 @@ def get_data(filters):
             twh.wf_from AS `From Stage`,
             IFNULL(twh.`action`, 'Unspecified') AS `Action Type`,
             IFNULL(twh.wf_to, 'Unspecified') AS `To Stage`,
+            IFNULL(wf_modified_by, 'Unspecified') AS `Modified By`,
             twh.stage_start_time AS `Stage Start Time`,
             IFNULL(CAST(twh.stage_end_time AS DATETIME), NOW()) AS `Stage End Time`,
-            IFNULL(twh.duration, TIMESTAMPDIFF(SECOND, IFNULL(twh.stage_start_time, NOW()), IFNULL(twh.stage_end_time, NOW()))) AS `Duration`, 
-            twt.allowed AS `User Role`
+            ABS(IFNULL(twh.duration, TIMESTAMPDIFF(SECOND, IFNULL(twh.stage_start_time, NOW()), IFNULL(twh.stage_end_time, NOW())))) AS `Duration`
+
+            
         FROM 
             `tabWorkflow History` twh
         INNER JOIN 
@@ -69,6 +72,7 @@ def get_columns():
     return [
         "Document Name:Link/Sales Acquisition:200",
 		"Posting Date:Date:200",
+        "User Role:Data:300",
         "Item Name:Data:200",
         "Operator Name:Data:200",
         "Customr Name:Data:200",
@@ -76,8 +80,8 @@ def get_columns():
         "From Stage:Data:200",
         "Action Type:Data:200",
         "To Stage:Data:200",
+        "Modified By:300",
         "Stage Start Time:Datetime:200",
         "Stage End Time:Datetime:200",
-        "Durations:Duration:200", 
-        "User Role:Data:200"
+        "Durations:Duration:200"
     ]
