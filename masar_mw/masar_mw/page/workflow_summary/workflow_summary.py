@@ -19,19 +19,20 @@ GROUP BY tsa.status AND tsa.name;""", as_dict =True)
 @frappe.whitelist()
 def duration_chart_data():
     results =  frappe.db.sql(f"""
-       SELECT 
-            twh.wf_from,
-            SUM(twh.duration) AS total_duration
-        FROM `tabWorkflow History` twh
-        GROUP BY twh.wf_from 
-        ORDER BY CASE 
-            WHEN twh.wf_from = 'Draft' THEN 1
-            WHEN twh.wf_from = 'Initiation of Discussion' THEN 2
-            WHEN twh.wf_from = 'Discussion (Acquisition)' THEN 3
-            WHEN twh.wf_from = 'Under Operator Approval' THEN 4
-            WHEN twh.wf_from = 'Under SP Approval' THEN 5
-            ELSE 6
-        END;
+     SELECT 
+    twh.wf_from,
+    SUM(twh.duration) AS total_duration
+FROM `tabWorkflow History` twh
+WHERE twh.duration IS NOT NULL
+GROUP BY twh.wf_from 
+ORDER BY CASE 
+    WHEN twh.wf_from = 'Draft' THEN 1
+    WHEN twh.wf_from = 'Initiation of Discussion' THEN 2
+    WHEN twh.wf_from = 'Discussion (Acquisition)' THEN 3
+    WHEN twh.wf_from = 'Under Operator Approval' THEN 4
+    WHEN twh.wf_from = 'Under SP Approval' THEN 5
+    ELSE 6
+END;
     """, as_dict =True)
     wf_from = list()
     durations_seconds= list()
