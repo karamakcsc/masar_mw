@@ -30,7 +30,10 @@ def get_data(filters):
     if filters.get('wf_from'):
         conditions += f" AND twh.wf_from = '{filters.get('wf_from')}' "
     if filters.get('wf_to'):
-        conditions += f" AND twh.wf_to = '{filters.get('wf_to')}' "
+        if filters.get('wf_to') == 'Unspecified':
+            conditions += f" AND twh.wf_to IS NULL"
+        else:
+            conditions += f" AND twh.wf_to LIKE '%{filters.get('wf_to')}' "
     if filters.get('action'):
         conditions += f" AND twh.`action` = '{filters.get('action')}' "
     if filters.get('role'):
@@ -57,7 +60,7 @@ def get_data(filters):
                 `tabWorkflow History` twh
             INNER JOIN 
                 `tabSales Acquisition` tsa ON twh.docname = tsa.name 
-            INNER JOIN 
+            LEFT JOIN 
                 `tabWorkflow Transition` twt ON twh.wf_from = twt.state AND twh.wf_to = twt.next_state    
                             
             WHERE  (tsa.posting_date BETWEEN '{_from}' AND '{to}'){conditions}
