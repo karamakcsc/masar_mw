@@ -28,7 +28,7 @@ def get_data(filters):
     if filters.get('operator_country'):
         conditions += f" AND tsa.operator_country = '{filters.get('operator_country')}' "
     if filters.get('wf_from'):
-        conditions += f" AND twh.wf_from LIKE '%{filters.get('wf_from')}' "
+        conditions += f" AND twh.wf_from = '{filters.get('wf_from')}' "
     if filters.get('wf_to'):
         conditions += f" AND twh.wf_to = '{filters.get('wf_to')}' "
     if filters.get('action'):
@@ -38,33 +38,30 @@ def get_data(filters):
 
     # SQL Query
     data = frappe.db.sql(f"""
-          SELECT 
-            tsa.name AS `Document Name`,
-            tsa.posting_date AS `Posting Date`,
-            twt.allowed AS `User Role`,
-            tsa.item_name AS `Item Name`,
-            tsa.operator_name AS `Operator Name`,
-            tsa.customer AS `Customer Name`,
-            tsa.operator_country AS `Operator Country`,
-            twh.wf_from AS `From Stage`,
-            IFNULL(twh.`action`, 'Unspecified') AS `Action Type`,
-            IFNULL(twh.wf_to, 'Unspecified') AS `To Stage`,
-            IFNULL(wf_modified_by, 'Unspecified') AS `Modified By`,
-            twh.stage_start_time AS `Stage Start Time`,
-            IFNULL(CAST(twh.stage_end_time AS DATETIME), NOW()) AS `Stage End Time`,
-            ABS(IFNULL(twh.duration, TIMESTAMPDIFF(SECOND, IFNULL(twh.stage_start_time, NOW()), IFNULL(twh.stage_end_time, NOW())))) AS `Duration`
-
-            
-        FROM 
-            `tabWorkflow History` twh
-        INNER JOIN 
-            `tabSales Acquisition` tsa ON twh.docname = tsa.name 
-        INNER JOIN 
-        	`tabWorkflow Transition` twt ON twh.wf_from = twt.state AND twh.wf_to = twt.next_state    
-    	WHERE 
-            (tsa.posting_date BETWEEN '{_from}' AND '{to}'){conditions}	
-        ORDER BY
-            twh.creation;""")
+            SELECT 
+                tsa.name AS `Document Name`,
+                tsa.posting_date AS `Posting Date`,
+                twt.allowed AS `User Role`,
+                tsa.item_name AS `Item Name`,
+                tsa.operator_name AS `Operator Name`,
+                tsa.customer AS `Customer Name`,
+                tsa.operator_country AS `Operator Country`,
+                twh.wf_from AS `From Stage`,
+                IFNULL(twh.`action`, 'Unspecified') AS `Action Type`,
+                IFNULL(twh.wf_to, 'Unspecified') AS `To Stage`,
+                IFNULL(wf_modified_by, 'Unspecified') AS `Modified By`,
+                twh.stage_start_time AS `Stage Start Time`,
+                IFNULL(CAST(twh.stage_end_time AS DATETIME), NOW()) AS `Stage End Time`,
+                ABS(IFNULL(twh.duration, TIMESTAMPDIFF(SECOND, IFNULL(twh.stage_start_time, NOW()), IFNULL(twh.stage_end_time, NOW())))) AS `Duration`
+            FROM 
+                `tabWorkflow History` twh
+            INNER JOIN 
+                `tabSales Acquisition` tsa ON twh.docname = tsa.name 
+            INNER JOIN 
+                `tabWorkflow Transition` twt ON twh.wf_from = twt.state AND twh.wf_to = twt.next_state    
+                            
+            WHERE  (tsa.posting_date BETWEEN '{_from}' AND '{to}'){conditions}
+            ORDER BY  twh.creation;""")
 
     return data
 
