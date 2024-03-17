@@ -33,10 +33,12 @@ def get_data(filters):
         conditions += f" AND twh.wf_to = '{filters.get('wf_to')}' "
     if filters.get('action'):
         conditions += f" AND twh.`action` = '{filters.get('action')}' "
+    if filters.get('role'):
+        conditions += f" AND twt.allowed = '{filters.get('role')}' "
 
     # SQL Query
     data = frappe.db.sql(f"""
-        SELECT 
+          SELECT 
             tsa.name AS `Document Name`,
             tsa.posting_date AS `Posting Date`,
             tsa.item_name AS `Item Name`,
@@ -48,14 +50,18 @@ def get_data(filters):
             IFNULL(twh.wf_to, 'Unspecified') AS `To Stage`,
             twh.stage_start_time AS `Stage Start Time`,
             IFNULL(CAST(twh.stage_end_time AS DATETIME), NOW()) AS `Stage End Time`,
-            IFNULL(twh.duration, TIMESTAMPDIFF(SECOND, IFNULL(twh.stage_start_time, NOW()), IFNULL(twh.stage_end_time, NOW()))) AS `Duration`
+            IFNULL(twh.duration, TIMESTAMPDIFF(SECOND, IFNULL(twh.stage_start_time, NOW()), IFNULL(twh.stage_end_time, NOW()))) AS `Duration`, 
+            twt.allowed AS `User Role`
         FROM 
             `tabWorkflow History` twh
         INNER JOIN 
             `tabSales Acquisition` tsa ON twh.docname = tsa.name 
-
-    		WHERE (tsa.posting_date BETWEEN '{_from}' AND '{to}'){conditions}
-			ORDER BY twh.creation;""")
+        INNER JOIN 
+        	`tabWorkflow Transition` twt ON twh.wf_from = twt.state AND twh.wf_to = twt.next_state    
+    	WHERE 
+            (tsa.posting_date BETWEEN '{_from}' AND '{to}'){conditions}	
+        ORDER BY
+            twh.creation;""")
 
     return data
 
@@ -72,5 +78,6 @@ def get_columns():
         "To Stage:Data:200",
         "Stage Start Time:Datetime:200",
         "Stage End Time:Datetime:200",
-        "Durations:Duration:200"
+        "Durations:Duration:200", 
+        "User Role:Data:200"
     ]

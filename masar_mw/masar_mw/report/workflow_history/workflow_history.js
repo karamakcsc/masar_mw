@@ -44,7 +44,7 @@ frappe.query_reports["Workflow History"] = {
 			"reqd": 1,
 			"default": frappe.datetime.year_end()
 		},
-	  {
+	 	{
 			"fieldname": "operator_country",
 			"label": __("Operator Country"),
 			"fieldtype": "Link",
@@ -75,7 +75,15 @@ frappe.query_reports["Workflow History"] = {
 			"options": "\nDraft\nInitiation of Discussion\nDiscussion (Acquisition)\nUnder Operator Approval\nUnder SP Approval\nApproved\nUnspecified",
 			"width": 100,
 			"reqd": 0,
-		}
+		},
+		{
+			"fieldname": "role",
+			"label": __("User Role"),
+			"fieldtype": "Link",
+			"options": "Role",
+			"width": 100,
+			"reqd": 0,
+		},
 
 ]
 };

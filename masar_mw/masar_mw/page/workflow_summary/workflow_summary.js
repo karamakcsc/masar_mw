@@ -1,53 +1,7 @@
-// frappe.pages['workflow-summary'].on_page_load = function (wrapper) {
-// 	var page = frappe.ui.make_app_page({
-// 		parent: wrapper,
-// 		title: 'Workflow Summary',
-// 		single_column: true
-// 	});
-// }
 
 frappe.pages['workflow-summary'].on_page_load = function (wrapper) {
 	new MyPage(wrapper);
 }
-
-// MyPage = Class.extend({
-// 	init: function (wrapper) {
-// 		this.page = frappe.ui.make_app_page({
-// 			parent: wrapper,
-// 			title: 'Workflow Summary',
-// 			single_column: true
-// 		});
-// 		this.make();
-// 	},
-// 	make: function () {
-// 		var draft_count = 0;
-// 		var io_discussion_count = 0;
-// 		var d_acquisition_count = 0;
-// 		var uo_approved_count = 0;
-// 		var up_approved_count = 0;
-// 		var approved_count = 0;
-
-// 		frappe.call({
-// 						method: "masar_mw.masar_mw.page.workflow_summary.workflow_summary.get_count",
-// 						//method: "masar_mw.masar_mw.masar_mw.page.workflow_summary.workflow_summary.get_count",
-// 						callback: function (r) {
-// 							console.log("r", r.message);
-// 							$.each(r.message, function (i, d) {
-// 								total_emp_contr += parseFloat(d.total_employee_contr.toFixed(3));
-// 								total_bank_contr += parseFloat(d.total_bank_contr.toFixed(3));
-// 								total_contr += parseFloat(d.total_contr.toFixed(3));
-// 								total_emp_contr_pl += parseFloat(d.total_employee_pl.toFixed(3));
-// 								total_bank_contr_pl += parseFloat(d.total_bank_pl.toFixed(3));
-// 								total_contr_pl += parseFloat(d.total_pl.toFixed(3));
-// 								total_rights += parseFloat(d.total_right.toFixed(3));
-// 								chart_emps.push(d["employee_name"])
-// 								chart_emp_contr.push(d["total_employee_contr"])
-// 								chart_bank_contr.push(d["total_bank_contr"])
-// 							});
-// 	}
-// });
-// }})
-
 MyPage = Class.extend({
 	init: function (wrapper) {
 		this.page = frappe.ui.make_app_page({
@@ -66,107 +20,115 @@ MyPage = Class.extend({
 		var approved_count = 0;
 		var docname_count = 0;
 		let me = $(this);
-		frappe.call({
-			method: "masar_mw.masar_mw.page.workflow_summary.workflow_summary.get_count",
-			callback: function (r) {
-				$.each(r.message, function (i, d) {
-					draft_count = parseFloat(d.draft_count.toFixed());
-					io_discussion_count = parseFloat(d.io_discussion_count.toFixed());
-					d_acquisition_count = parseFloat(d.d_acquisition_count.toFixed(3));
-					docname_count = parseFloat(d.docname_count.toFixed(3));
-					uo_approved_count = parseFloat(d.uo_approved_count.toFixed(3));
-					up_approved_count = parseFloat(d.up_approved_count.toFixed(3));
-					approved_count = parseFloat(d.approved_count.toFixed(3));
-				});
-				$("#draft_count")[0].innerText = draft_count.toFixed(3)
-				$("#io_discussion_count")[0].innerText = io_discussion_count.toFixed(3)
-				$("#d_acquisition_count")[0].innerText = d_acquisition_count.toFixed(3)
-				$("#docname_count")[0].innerText = docname_count.toFixed(3)
-				$("#uo_approved_count")[0].innerText = uo_approved_count.toFixed(3)
-				$("#up_approved_count")[0].innerText = up_approved_count.toFixed(3)
-				$("#approved_count")[0].innerText = approved_count.toFixed(3)
-
-
-				
-				bar_chart()
-
-			}
-		});
-		$(document).ready(function () {
+		let card_data = function(){
 			frappe.call({
-				method: "masar_mw.masar_mw.page.workflow_summary.workflow_summary.get_average",
+				method: "masar_mw.masar_mw.page.workflow_summary.workflow_summary.get_count",
 				callback: function (r) {
-					var from = []; 
-					var avg = [];
 					$.each(r.message, function (i, d) {
-						from.push(d.wf_from); 
-						avg.push(parseFloat(d.avg_duration.toFixed(3)));
+						draft_count = parseFloat(d.draft_count.toFixed());
+						io_discussion_count = parseFloat(d.io_discussion_count.toFixed());
+						d_acquisition_count = parseFloat(d.d_acquisition_count.toFixed(3));
+						docname_count = parseFloat(d.docname_count.toFixed(3));
+						uo_approved_count = parseFloat(d.uo_approved_count.toFixed(3));
+						up_approved_count = parseFloat(d.up_approved_count.toFixed(3));
+						approved_count = parseFloat(d.approved_count.toFixed(3));
 					});
-			
-					var chart = new frappe.Chart("#chart_bar", { 
-						data: {
-							labels: from,
-							datasets: [
-								{
-									name: "Workflow Average",
-									values: avg
-								}
-							]
-						},
-						type: 'bar',
-						height: 250, 
-						colors: ['blue'], 
-						axisOptions: {
-							xAxisMode: 'tick',
-							xIsSeries: 1
-						}
-					});
-			
-					$("#wf_from")[0].innerText = from[0];
-					$("#avg_duration")[0].innerText = avg[0];
+					$("#draft_count")[0].innerText = draft_count.toFixed(3)
+					$("#io_discussion_count")[0].innerText = io_discussion_count.toFixed(3)
+					$("#d_acquisition_count")[0].innerText = d_acquisition_count.toFixed(3)
+					$("#docname_count")[0].innerText = docname_count.toFixed(3)
+					$("#uo_approved_count")[0].innerText = uo_approved_count.toFixed(3)
+					$("#up_approved_count")[0].innerText = up_approved_count.toFixed(3)
+					$("#approved_count")[0].innerText = approved_count.toFixed(3)
+
 				}
-            });
-        });
-		
-		let bar_chart = function () { // equals to -> function page_chart(){
-
-			const data = {
-				labels: ['Draft', 'Initiation of Discussion', 'Discussion (Acquisition)', 'Under Operator Approval' , 'Under SP Approval'],
-				datasets: [
-					// {
-					// 	name: 'Dataset 1',
-					// 	values: [10, 20, 30]
-					// },
-					{
-						name: 'History Average',
-						values: [15, 25, 35,10,50]
-					}
-				]
-			};
-
-
-			const chart = new frappe.Chart("#chart", {  // or a DOM element,
-				// new Chart() in case of ES6 module with above usage
-				title: "Workflow History Chart",
-				data: data,
-				type: 'bar', // 'axis-mixed' or 'bar', 'line', 'scatter', 'pie', 'percentage'
-				height: 250,
-				colors: ['#7cd6fd', '#743ee2'],
-				// tooltipOptions: {
-				// 		//formatTooltipX: (d) => (d).toUpperCase(),
-				// 		formatTooltipY: (d) => d
-				// }
-
-
-			})
-
+			});
+		}
+		let duration_chart = function() {
+			frappe.call({
+				method: 'masar_mw.masar_mw.page.workflow_summary.workflow_summary.duration_chart_data',
+				callback: function(r) {
+					let wf_from = r.message.wf_from;
+					let duration = r.message.durations_hours_rounded;
+					const data = {
+						labels: wf_from,
+						datasets: [
+							{
+								name: 'Duration Hours',
+								values: duration
+							}
+						]
+					};
+					const chart = new frappe.Chart("#duration_chart", {  
+								title: "Workflow History Chart",
+								data: data,
+								type: 'bar',
+								height: 300,
+								// colors: ['green'],
+							})
+				
+				}
+			});
 		}
 
-
-
+		let duration_avg_chart = function() {
+			frappe.call({
+				method: 'masar_mw.masar_mw.page.workflow_summary.workflow_summary.get_duration_average',
+				callback: function(r) {
+					let wf_from = r.message.wf_from;
+					let duration_avg = r.message.duration_avg_hours_rounded;
+					const data = {
+						labels: wf_from,
+						datasets: [
+							{
+								name: 'History Average',
+								values: duration_avg
+							}
+						]
+					};
+					const chart = new frappe.Chart("#duration_avg_chart", {  
+								title: "Stages Percentage",
+								data: data,
+								type: 'percentage',
+								height: 300,
+								// colors: ['#7cd6fd', '#743ee2'],
+							})
+				
+				}
+			});
+		}
+		let status_percentage_chart = function() {
+			frappe.call({
+				method: 'masar_mw.masar_mw.page.workflow_summary.workflow_summary.status_percentage_data',
+				callback: function(r) {
+					let status = r.message.status;
+					let percentages = r.message.percentages;
+					const data = {
+						labels: status,
+						datasets: [
+							{
+								name: 'Status Percentage',
+								values: percentages
+							}
+						]
+					};
+					const chart = new frappe.Chart("#status_per_chart", {  
+								title: " ",
+								data: data,
+								type: 'pie',
+								height: 400,
+								width:200,
+								// colors: ['#7cd6fd', '#743ee2'],
+							})
+				
+				}
+			});
+		}
 		$(frappe.render_template(frappe.saving_funds.body, this)).appendTo(this.page.main)
-		bar_chart()
-
+		card_data();
+		duration_chart();
+		duration_avg_chart();
+		status_percentage_chart();
 	}
 })
 
@@ -299,36 +261,16 @@ body += '					</div>'
 body += '				</div>'
 body += '				<div class="widget-footer"></div>'
 body += '			</div>'
-
-// body += '				<div class="widget widget-shadow number-widget-box" data-widget-name="total contr pl">'
-// body += '					<div class="widget-head">'
-// body += '					<div class="widget-label">'
-// body += '						<div class="widget-title">'
-// body += '							<div class="number-label">Total P&L Contributions</div>'
-// body += '						</div>'
-// body += '						<div class="widget-subtitle"></div>'
-// body += '					</div>'
-// body += '				</div>'
-// body += '				<div class="widget-body">'
-// body += '					<div class="widget-content">'
-// body += '						<div class="number" style="color:undefined" id="total_contr_pl"> 0</div>'
-// body += '					</div>'
-// body += '				</div>'
-// body += '				<div class="widget-footer"></div>'
-// body += '			</div>'
-
-
 body += '		</div>'
-body += '	</div>'
-//////////////// START mahmoud
-body += '	<div id="chart_bar"></div>'
-body += '	<div>'
-body += '		<p><span id="wf_from"></span></p> '
-body += '		<p><span id="avg_duration"></span></p>'
-body += '	</div>'
-/////////// END 
-body += '<div id="chart"></div>'
+body += '	</div>' 
+body += '<div id="duration_chart"></div>'
 body += '<div id="line-chart"></div>'
+body += '<div id="duration_avg_chart"></div>'
+body += '<div id="line-chart"></div>'
+body += '<div id="status_per_chart"></div>'
+body += '<div id="line-chart"></div>'
+
+
 
 frappe.saving_funds = {
 	body: body

@@ -5,7 +5,6 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "wf_parent",
   "wf_creation",
   "wf_status",
   "docname",
@@ -76,12 +75,6 @@
    "fieldname": "wf_modified",
    "fieldtype": "Datetime",
    "label": "Modified"
-  },
-  {
-   "fieldname": "wf_parent",
-   "fieldtype": "Link",
-   "label": "Parent",
-   "options": "Version"
   },
   {
    "fieldname": "stage_start_time",
