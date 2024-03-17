@@ -85,7 +85,7 @@ frappe.query_reports["Workflow History"] = {
 			"get_query": function() {
                 return {
                     filters: {
-                        'enabled': 1
+                        'disabled': 0
                     }
                 }
             }
