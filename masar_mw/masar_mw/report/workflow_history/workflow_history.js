@@ -81,7 +81,14 @@ frappe.query_reports["Workflow History"] = {
             "fieldtype": "Link",
             "options": "Role",
             "width": 100,
-            "reqd": 0
+            "reqd": 0,
+			"get_query": function() {
+                return {
+                    filters: {
+                        'enabled': 1
+                    }
+                }
+            }
         },
         {
             "fieldname": "wf_modified_by",
