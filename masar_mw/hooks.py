@@ -230,3 +230,12 @@ doctype_js = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+fixtures = [
+    {"dt": "Custom Field", "filters": [
+        [
+            "name", "in", [
+                "Payment Entry-custom_supp_recon_ref"
+            ]
+        ]
+    ]},
+]
