@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"HMZSHtm5Ef\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Media World</span>\",\"col\":12}},{\"id\":\"wSOZei2To2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Acquisition\",\"col\":3}},{\"id\":\"f_seqWRIkb\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"id\":\"7bf3OohYg_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"PsQnHwFSQx\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Operator\",\"col\":3}},{\"id\":\"DPr_5zI0RX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Workflow History\",\"col\":3}},{\"id\":\"OpY5tmcaPs\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"Zg-S6mC-5T\",\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"id\":\"Hl4Te35eNu\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports & Dashboard\",\"col\":4}}]",
+ "content": "[{\"id\":\"HMZSHtm5Ef\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Media World</span>\",\"col\":12}},{\"id\":\"wSOZei2To2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Acquisition\",\"col\":3}},{\"id\":\"f_seqWRIkb\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"id\":\"7bf3OohYg_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"PsQnHwFSQx\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Operator\",\"col\":3}},{\"id\":\"DPr_5zI0RX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Workflow History\",\"col\":3}},{\"id\":\"qn0hi1NUQO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Supplier Reconciliation Process\",\"col\":3}},{\"id\":\"OpY5tmcaPs\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"Zg-S6mC-5T\",\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"id\":\"Hl4Te35eNu\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports & Dashboard\",\"col\":4}}]",
  "creation": "2024-03-07 10:25:25.532214",
  "custom_blocks": [],
  "docstatus": 0,
@@ -102,7 +102,7 @@
    "type": "Link"
   }
  ],
- "modified": "2024-03-07 10:30:43.544531",
+ "modified": "2025-05-13 10:49:56.145233",
  "modified_by": "Administrator",
  "module": "Masar Mw",
  "name": "Media World",
@@ -119,6 +119,14 @@
    "doc_view": "List",
    "label": "Sales Acquisition",
    "link_to": "Sales Acquisition",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Supplier Reconciliation Process",
+   "link_to": "Supplier Reconciliation Process",
    "stats_filter": "[]",
    "type": "DocType"
   },

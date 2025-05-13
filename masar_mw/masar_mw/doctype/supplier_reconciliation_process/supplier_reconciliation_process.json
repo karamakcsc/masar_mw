@@ -1,0 +1,166 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:naming_series",
+ "creation": "2025-04-28 16:08:30.949457",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "paid_from",
+  "mode_of_payment",
+  "column_break_bzyx",
+  "posting_date",
+  "paid_from_account_currency",
+  "section_break_sbnc",
+  "default_cost_center",
+  "fx_description",
+  "column_break_mflz",
+  "default_fx_gain_loss_",
+  "section_break_ysnm",
+  "invoices",
+  "section_break_nyf2",
+  "amended_from",
+  "column_break_zigl",
+  "naming_series"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_nyf2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Supplier Reconciliation Process",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_bzyx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ysnm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "invoices",
+   "fieldtype": "Table",
+   "label": "Invoices",
+   "options": "Supplier Reconciliation Invoices"
+  },
+  {
+   "fieldname": "paid_from",
+   "fieldtype": "Link",
+   "label": "Paid From Account",
+   "link_filters": "[[\"Account\",\"account_type\",\"=\",\"Bank\"],[\"Account\",\"account_currency\",\"=\",\"USD\"]]",
+   "options": "Account"
+  },
+  {
+   "fetch_from": "paid_from.account_currency",
+   "fieldname": "paid_from_account_currency",
+   "fieldtype": "Data",
+   "label": "Paid From Account Currency",
+   "read_only": 1
+  },
+  {
+   "default": "Wire Transfer",
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment",
+   "options": "Mode of Payment"
+  },
+  {
+   "fieldname": "column_break_zigl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "SUPP-RECON-.",
+   "read_only": 1
+  },
+  {
+   "default": "MW Jordan - MWJ",
+   "fieldname": "default_cost_center",
+   "fieldtype": "Link",
+   "label": "Default Cost Center",
+   "link_filters": "[[\"Cost Center\",\"disabled\",\"=\",0],[\"Cost Center\",\"is_group\",\"=\",0]]",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "section_break_sbnc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_mflz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_fx_gain_loss_",
+   "fieldtype": "Float",
+   "label": "Default FX Gain Loss %",
+   "precision": "9"
+  },
+  {
+   "fieldname": "fx_description",
+   "fieldtype": "Data",
+   "label": "FX Description"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "Payment Entry",
+   "link_fieldname": "custom_supp_recon_ref"
+  }
+ ],
+ "modified": "2025-05-12 12:52:54.027677",
+ "modified_by": "Administrator",
+ "module": "Masar Mw",
+ "name": "Supplier Reconciliation Process",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
