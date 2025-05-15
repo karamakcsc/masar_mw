@@ -14,8 +14,10 @@
   "paid_from_account_currency",
   "section_break_sbnc",
   "default_cost_center",
+  "default_discount_account",
   "fx_description",
   "column_break_mflz",
+  "default_deductions_account",
   "default_fx_gain_loss_",
   "section_break_ysnm",
   "invoices",
@@ -73,7 +75,8 @@
    "fieldtype": "Link",
    "label": "Paid From Account",
    "link_filters": "[[\"Account\",\"account_type\",\"=\",\"Bank\"],[\"Account\",\"account_currency\",\"=\",\"USD\"]]",
-   "options": "Account"
+   "options": "Account",
+   "reqd": 1
   },
   {
    "fetch_from": "paid_from.account_currency",
@@ -127,6 +130,20 @@
    "fieldname": "fx_description",
    "fieldtype": "Data",
    "label": "FX Description"
+  },
+  {
+   "default": "420000003 - Other revenues - MWJ",
+   "fieldname": "default_discount_account",
+   "fieldtype": "Link",
+   "label": "Default Discount Account",
+   "options": "Account"
+  },
+  {
+   "default": "690000003 - FX gain / loss - MWJ",
+   "fieldname": "default_deductions_account",
+   "fieldtype": "Link",
+   "label": "Default Deductions Account",
+   "options": "Account"
   }
  ],
  "grid_page_length": 50,
@@ -138,7 +155,7 @@
    "link_fieldname": "custom_supp_recon_ref"
   }
  ],
- "modified": "2025-05-12 12:52:54.027677",
+ "modified": "2025-05-14 15:11:59.466705",
  "modified_by": "Administrator",
  "module": "Masar Mw",
  "name": "Supplier Reconciliation Process",

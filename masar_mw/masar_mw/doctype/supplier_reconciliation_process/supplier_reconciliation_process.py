@@ -186,8 +186,6 @@ class SupplierReconciliationProcess(Document):
 	def calculate_amounts(self):
 		if self.invoices:
 			for row in self.invoices:
-				# if row.amount_to_pay > row.outstanding_amount:
-				# 	frappe.throw(f"Amount to pay can't be more than outstanding amount in row {row.idx}.")
 				if not row.amount_to_pay:
 					frappe.throw(f"Amount to pay is required in row {row.idx}.")
 				if not row.fx_gain_loss_perc and not self.default_fx_gain_loss_:
@@ -198,89 +196,116 @@ class SupplierReconciliationProcess(Document):
 					row.net_payable = abs(row.amount_to_pay) * row.fx_gain_loss_perc
 					row.fx_gain_loss_amount = abs(row.amount_to_pay) - row.net_payable
 				if not row.fx_gainloss_cost_center:
-					row.fx_gainloss_cost_center = self.default_cost_center
+					row.fx_gainloss_cost_center = self.default_cost_center or frappe.throw(f"Cost Center is required in row {row.idx}.")
 				if not row.fx_gainloss_description:
-					row.fx_gainloss_description = row.party_name + " - " + self.fx_description + " - " + row.remarks
-					
+					row.fx_gainloss_description = f"{row.party_name} - {self.fx_description}" if self.fx_description else f"Rate @ {self.default_fx_gain_loss_} - {row.remarks}"
+
 	def create_payment(self):
-		if self.invoices:
-			suppliers = {}
-			usd_jod = frappe.get_value("Currency Exchange", {
+		if not self.invoices:
+			frappe.throw("No invoices found to create payment entry.")
+
+		usd_to_jod = self.get_usd_to_jod()
+		suppliers = self.split_invoices_by_supplier(usd_to_jod)
+
+		for supplier, data in suppliers.items():
+			payment_entry = self.build_payment_entry(supplier, data, usd_to_jod)
+			payment_entry.save(ignore_permissions=True)
+			frappe.msgprint(f"Payment Entry {payment_entry.name} created successfully for supplier {supplier}.", alert=True, indicator='green')
+
+	def get_usd_to_jod(self):
+		if self.paid_from_account_currency == "USD":
+			rate = frappe.get_value("Currency Exchange", {
 				"from_currency": "USD",
 				"to_currency": "JOD"
-			}, "exchange_rate") if self.paid_from_account_currency == "USD" else 1
-
-			if not usd_jod:
+			}, "exchange_rate")
+			if not rate:
 				frappe.throw("Please add a currency exchange from USD to JOD.")
+			return rate
+		return 1
 
-			# jod_usd = frappe.get_value("Currency Exchange", {
-			# 	"from_currency": "JOD",
-			# 	"to_currency": "USD"
-			# }, "exchange_rate")
-   
-			for supp in self.invoices:
-				if supp.party not in suppliers:
-					suppliers[supp.party] = {
-						"references": [],
-						"total_paid": 0,
-						"total_fx_gain_loss": 0,
-						"cost_center": supp.fx_gainloss_cost_center,
-						"description": supp.fx_gainloss_description,
-						"return_inv": 0
-					}
-				
-				suppliers[supp.party]["references"].append({
-					"reference_doctype": supp.invoice_type,
-					"reference_name": supp.invoice_number,
-					"total_amount": supp.amount,
-					"outstanding_amount": supp.outstanding_amount,
-					"allocated_amount": supp.amount_to_pay
-				})
-				
-				suppliers[supp.party]["total_paid"] += supp.amount_to_pay
-				suppliers[supp.party]["total_fx_gain_loss"] += supp.fx_gain_loss_amount
-				if supp.outstanding_amount < 0:
-					suppliers[supp.party]["return_inv"] += supp.amount_to_pay
+	def split_invoices_by_supplier(self, exchange_rate):
+		suppliers = {}
 
-			
-			for supplier, data in suppliers.items():
-				total_paid = flt(data["total_paid"], 3)
-				total_fx_gain_loss = flt(data["total_fx_gain_loss"], 3)
-				if data["return_inv"]:
-					total_paid_with_fx = flt(abs(total_paid), 3)
-				else:
-					total_paid_with_fx = flt(total_paid + total_fx_gain_loss * -1, 3)
+		for row in self.invoices:
+			if row.party not in suppliers:
+				suppliers[row.party] = {
+					"references": [],
+					"total_paid": 0,
+					"fx_gain_loss": 0,
+					"return_inv_total": 0,
+					"discount_total": 0,
+					"fx_account": self.default_deductions_account,
+					"discount_account": self.default_discount_account,
+					"cost_center": row.fx_gainloss_cost_center,
+					"description": row.fx_gainloss_description
+				}
 
-				new_payment = frappe.new_doc("Payment Entry")
-				new_payment.payment_type = "Pay"
-				new_payment.posting_date = self.posting_date
-				new_payment.company = self.company
-				new_payment.mode_of_payment = "Wire Transfer"
-				new_payment.party_type = "Supplier"
-				new_payment.party = supplier
-				new_payment.paid_amount = total_paid_with_fx
-				new_payment.source_exchange_rate = usd_jod
-				new_payment.reference_no = self.name
-				new_payment.reference_date = self.posting_date
-				new_payment.received_amount = total_paid_with_fx
-				new_payment.paid_from = self.paid_from
-				new_payment.paid_from_account_currency = self.paid_from_account_currency
-				new_payment.custom_supp_recon_ref = self.name
-				
-				for ref in data["references"]:
-					new_payment.append("references", ref)
-				
-				if not data["return_inv"]:
-					if data["total_fx_gain_loss"] > 0:
-						new_payment.append("deductions", {
-							"account": "690000003 - FX gain / loss - MWJ",
-							"cost_center": data["cost_center"],
-							"amount": flt((data["total_fx_gain_loss"] * usd_jod) * -1, 3),
-							"description": data["description"]
-						})
-     
-				new_payment.save(ignore_permissions=True)
-				# new_payment.submit()
-				frappe.msgprint(f"Payment Entry {new_payment.name} created successfully for supplier {supplier}.", alert=True, indicator='green')
+			suppliers[row.party]["references"].append({
+				"reference_doctype": row.invoice_type,
+				"reference_name": row.invoice_number,
+				"total_amount": row.amount,
+				"outstanding_amount": row.outstanding_amount,
+				"allocated_amount": row.amount_to_pay
+			})
+
+			suppliers[row.party]["total_paid"] += row.amount_to_pay
+			suppliers[row.party]["fx_gain_loss"] += row.fx_gain_loss_amount
+
+			if row.outstanding_amount < 0:
+				suppliers[row.party]["return_inv_total"] += row.amount_to_pay
+			discount_amount = 0
+			if row.discount:
+				discount_amount = flt(row.amount_to_pay * row.fx_gain_loss_perc * (row.discount / 100), 3)
+			suppliers[row.party]["discount_total"] += discount_amount
+		return suppliers
+
+	def build_payment_entry(self, supplier, data, exchange_rate):
+		total_paid = data["total_paid"]
+		fx_loss = data["fx_gain_loss"]
+		return_inv = data["return_inv_total"]
+		discount_amount = data.get("discount_total", 0)
+
+		if return_inv:
+			payable = abs(total_paid)
+		elif discount_amount:
+			base_amount = flt(total_paid - fx_loss, 3)
+			payable = flt(base_amount - discount_amount, 3)
 		else:
-			frappe.throw("No invoices found to create payment entry.")
+			payable = flt(total_paid - fx_loss, 3)
+
+		pe = frappe.new_doc("Payment Entry")
+		pe.payment_type = "Pay"
+		pe.posting_date = self.posting_date
+		pe.company = self.company
+		pe.mode_of_payment = self.mode_of_payment
+		pe.party_type = "Supplier"
+		pe.party = supplier
+		pe.paid_amount = payable
+		pe.received_amount = payable
+		pe.source_exchange_rate = exchange_rate
+		pe.reference_no = self.name
+		pe.reference_date = self.posting_date
+		pe.paid_from = self.paid_from
+		pe.paid_from_account_currency = self.paid_from_account_currency
+		pe.custom_supp_recon_ref = self.name
+
+		for ref in data["references"]:
+			pe.append("references", ref)
+
+		if not return_inv:
+			if fx_loss > 0:
+				pe.append("deductions", {
+					"account": data["fx_account"],
+					"cost_center": data["cost_center"],
+					"amount": flt((fx_loss * exchange_rate) * -1, 3),
+					"description": data["description"]
+				})
+
+			if discount_amount:
+				pe.append("deductions", {
+					"account": data["discount_account"],
+					"cost_center": data["cost_center"],
+					"amount": flt(discount_amount * exchange_rate * -1, 3)
+				})
+
+		return pe

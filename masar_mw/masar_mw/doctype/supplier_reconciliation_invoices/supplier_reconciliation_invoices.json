@@ -7,11 +7,11 @@
  "field_order": [
   "invoice_type",
   "invoice_number",
-  "invoice_date",
   "party_type",
   "party",
   "party_name",
   "remarks",
+  "invoice_date",
   "fx_gainloss_description",
   "col_break1",
   "amount",
@@ -20,6 +20,7 @@
   "exchange_rate",
   "amount_to_pay",
   "fx_gain_loss_perc",
+  "discount",
   "net_payable",
   "fx_gain_loss_amount",
   "fx_gainloss_cost_center"
@@ -36,7 +37,6 @@
    "columns": 2,
    "fieldname": "invoice_number",
    "fieldtype": "Dynamic Link",
-   "in_list_view": 1,
    "label": "Invoice Number",
    "options": "invoice_type",
    "read_only": 1
@@ -104,6 +104,7 @@
    "reqd": 1
   },
   {
+   "columns": 1,
    "fieldname": "fx_gain_loss_perc",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -119,6 +120,7 @@
    "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "fx_gain_loss_amount",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -126,8 +128,10 @@
    "read_only": 1
   },
   {
+   "columns": 2,
    "fieldname": "remarks",
    "fieldtype": "Small Text",
+   "in_list_view": 1,
    "label": "Remarks",
    "read_only": 1
   },
@@ -145,16 +149,25 @@
    "options": "Cost Center"
   },
   {
+   "columns": 1,
    "fieldname": "party_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Party Name",
    "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "discount",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Discount %"
   }
  ],
  "grid_page_length": 50,
  "istable": 1,
  "links": [],
- "modified": "2025-05-12 13:18:31.042775",
+ "modified": "2025-05-15 15:14:13.412564",
  "modified_by": "Administrator",
  "module": "Masar Mw",
  "name": "Supplier Reconciliation Invoices",
