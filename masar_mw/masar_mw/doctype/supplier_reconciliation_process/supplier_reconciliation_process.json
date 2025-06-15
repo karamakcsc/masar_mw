@@ -74,7 +74,7 @@
    "fieldname": "paid_from",
    "fieldtype": "Link",
    "label": "Paid From Account",
-   "link_filters": "[[\"Account\",\"account_type\",\"=\",\"Bank\"],[\"Account\",\"account_currency\",\"=\",\"USD\"]]",
+   "link_filters": "[[\"Account\",\"account_type\",\"=\",\"Bank\"],[\"Account\",\"account_currency\",\"=\",\"USD\"],[\"Account\",\"company\",\"=\",\"Media World Jordan\"]]",
    "options": "Account",
    "reqd": 1
   },
@@ -155,7 +155,7 @@
    "link_fieldname": "custom_supp_recon_ref"
   }
  ],
- "modified": "2025-05-14 15:11:59.466705",
+ "modified": "2025-06-15 12:26:33.601697",
  "modified_by": "Administrator",
  "module": "Masar Mw",
  "name": "Supplier Reconciliation Process",

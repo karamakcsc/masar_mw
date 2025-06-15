@@ -209,7 +209,7 @@ class SupplierReconciliationProcess(Document):
 
 		for supplier, data in suppliers.items():
 			payment_entry = self.build_payment_entry(supplier, data, usd_to_jod)
-			payment_entry.save(ignore_permissions=True)
+			payment_entry.insert(ignore_permissions=True)
 			frappe.msgprint(f"Payment Entry {payment_entry.name} created successfully for supplier {supplier}.", alert=True, indicator='green')
 
 	def get_usd_to_jod(self):
@@ -260,19 +260,22 @@ class SupplierReconciliationProcess(Document):
 		return suppliers
 
 	def build_payment_entry(self, supplier, data, exchange_rate):
-		total_paid = data["total_paid"]
-		fx_loss = data["fx_gain_loss"]
-		return_inv = data["return_inv_total"]
+		references = data["references"]
+		total_allocated = sum(ref["allocated_amount"] for ref in references)
+		
+		fx_loss = data.get("fx_gain_loss", 0)
 		discount_amount = data.get("discount_total", 0)
-
-		if return_inv:
-			payable = abs(total_paid)
-		elif discount_amount:
-			base_amount = flt(total_paid - fx_loss, 3)
-			payable = flt(base_amount - discount_amount, 3)
-		else:
-			payable = flt(total_paid - fx_loss, 3)
-
+		
+		fx_deduction_jod = flt(fx_loss * exchange_rate, 2)
+		discount_deduction_jod = flt(discount_amount * exchange_rate, 2)
+		
+		fx_deduction_usd = flt(fx_deduction_jod / exchange_rate, 3)
+		discount_deduction_usd = flt(discount_deduction_jod / exchange_rate, 3)
+		
+		paid_amount = flt(total_allocated - fx_deduction_usd - discount_deduction_usd, 3)
+		
+		base_paid_amount = flt(paid_amount * exchange_rate, 2)
+		
 		pe = frappe.new_doc("Payment Entry")
 		pe.payment_type = "Pay"
 		pe.posting_date = self.posting_date
@@ -280,32 +283,35 @@ class SupplierReconciliationProcess(Document):
 		pe.mode_of_payment = self.mode_of_payment
 		pe.party_type = "Supplier"
 		pe.party = supplier
-		pe.paid_amount = payable
-		pe.received_amount = payable
+		pe.paid_amount = paid_amount
+		pe.received_amount = paid_amount
+		pe.base_paid_amount = base_paid_amount
+		pe.base_received_amount = base_paid_amount
 		pe.source_exchange_rate = exchange_rate
+		pe.target_exchange_rate = exchange_rate
 		pe.reference_no = self.name
 		pe.reference_date = self.posting_date
 		pe.paid_from = self.paid_from
 		pe.paid_from_account_currency = self.paid_from_account_currency
 		pe.custom_supp_recon_ref = self.name
-
-		for ref in data["references"]:
+		
+		for ref in references:
 			pe.append("references", ref)
-
-		if not return_inv:
-			if fx_loss > 0:
-				pe.append("deductions", {
-					"account": data["fx_account"],
-					"cost_center": data["cost_center"],
-					"amount": flt((fx_loss * exchange_rate) * -1, 3),
-					"description": data["description"]
-				})
-
-			if discount_amount:
-				pe.append("deductions", {
-					"account": data["discount_account"],
-					"cost_center": data["cost_center"],
-					"amount": flt(discount_amount * exchange_rate * -1, 3)
-				})
-
+		
+		if fx_loss > 0:
+			pe.append("deductions", {
+				"account": data["fx_account"],
+				"cost_center": data["cost_center"],
+				"amount": -fx_deduction_jod,
+				"description": data["description"]
+			})
+		
+		if discount_amount > 0:
+			pe.append("deductions", {
+				"account": data["discount_account"],
+				"cost_center": data["cost_center"],
+				"amount": -discount_deduction_jod,
+				"description": "Discount Adjustment"
+			})
+		
 		return pe

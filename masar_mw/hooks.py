@@ -238,4 +238,17 @@ fixtures = [
             ]
         ]
     ]},
+    {
+        "doctype": "Property Setter",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "Payment Entry-difference_amount-precision",
+                    "Payment Entry-base_paid_amount-precision"
+                ]
+            ]
+        ]
+    }
 ]
