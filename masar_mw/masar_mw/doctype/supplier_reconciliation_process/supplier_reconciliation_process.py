@@ -237,7 +237,8 @@ class SupplierReconciliationProcess(Document):
 					"fx_account": self.default_deductions_account,
 					"discount_account": self.default_discount_account,
 					"cost_center": row.fx_gainloss_cost_center,
-					"description": row.fx_gainloss_description
+					"description": row.fx_gainloss_description,
+					"discount": row.discount if row.discount else 0
 				}
 
 			suppliers[row.party]["references"].append({
@@ -269,13 +270,17 @@ class SupplierReconciliationProcess(Document):
 		fx_deduction_jod = flt(fx_loss * exchange_rate, 2)
 		discount_deduction_jod = flt(discount_amount * exchange_rate, 2)
 		
-		fx_deduction_usd = flt(fx_deduction_jod / exchange_rate, 3)
-		discount_deduction_usd = flt(discount_deduction_jod / exchange_rate, 3)
+		fx_deduction_usd = flt(fx_deduction_jod / exchange_rate, 2)
+		discount_deduction_usd = flt(discount_deduction_jod / exchange_rate, 2)
 		
-		paid_amount = flt(total_allocated - fx_deduction_usd - discount_deduction_usd, 3)
+		paid_amount = flt(total_allocated - fx_deduction_usd - discount_deduction_usd, 2)
 		
 		base_paid_amount = flt(paid_amount * exchange_rate, 2)
-		
+
+		# final_difference = base_paid_amount - (data["total_paid"] * exchange_rate - fx_deduction_jod - discount_deduction_jod)
+		# if abs(final_difference) <= 0.01:
+		# 	base_paid_amount -= final_difference
+
 		pe = frappe.new_doc("Payment Entry")
 		pe.payment_type = "Pay"
 		pe.posting_date = self.posting_date
@@ -294,24 +299,25 @@ class SupplierReconciliationProcess(Document):
 		pe.paid_from = self.paid_from
 		pe.paid_from_account_currency = self.paid_from_account_currency
 		pe.custom_supp_recon_ref = self.name
-		
+
 		for ref in references:
 			pe.append("references", ref)
-		
+
 		if fx_loss > 0:
 			pe.append("deductions", {
 				"account": data["fx_account"],
 				"cost_center": data["cost_center"],
 				"amount": -fx_deduction_jod,
+				"is_exchange_gain_loss": 1,
 				"description": data["description"]
 			})
-		
+
 		if discount_amount > 0:
 			pe.append("deductions", {
 				"account": data["discount_account"],
 				"cost_center": data["cost_center"],
 				"amount": -discount_deduction_jod,
-				"description": "Discount Adjustment"
+				"description": f"Discount {data['discount']}%"
 			})
-		
+
 		return pe

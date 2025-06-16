@@ -31,6 +31,7 @@ app_license = "mit"
 doctype_js = {
     "Purchase Invoice" : "custom/purchase_invoice/purchase_invoice.js",
     "Sales Invoice" : "custom/sales_invoice/sales_invoice.js",
+    "Payment Entry" : "custom/payment_entry/payment_entry.js"
               }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -234,7 +235,11 @@ fixtures = [
     {"dt": "Custom Field", "filters": [
         [
             "name", "in", [
-                "Payment Entry-custom_supp_recon_ref"
+                "Payment Entry-custom_supp_recon_ref",
+                "Sales Invoice-custom_ref_no",
+                "Payment Entry Reference-custom_reference_number",
+                "Payment Entry Reference-custom_section_break_bfpoc",
+                "Payment Entry Reference-custom_remarks"
             ]
         ]
     ]},
