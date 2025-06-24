@@ -9,7 +9,7 @@ class SupplierReconciliationProcess(Document):
 	def validate(self):
 		self.calculate_amounts()
 	def on_submit(self):
-		self.create_payment()
+		frappe.enqueue(self.create_payment, queue='default', timeout=600, is_async=True)
 
 	@frappe.whitelist()
 	def get_data(self):
@@ -169,6 +169,8 @@ class SupplierReconciliationProcess(Document):
 				AND vo.party = ot.party
 			LEFT JOIN 
 				tabSupplier ts ON ts.name = vo.party
+			WHERE
+				vo.voucher_type <> 'Journal Entry'
 			HAVING 
 				outstanding_in_account_currency <> 0;
 		""", as_dict=True)
@@ -267,15 +269,15 @@ class SupplierReconciliationProcess(Document):
 		fx_loss = data.get("fx_gain_loss", 0)
 		discount_amount = data.get("discount_total", 0)
 		
-		fx_deduction_jod = flt(fx_loss * exchange_rate, 2)
-		discount_deduction_jod = flt(discount_amount * exchange_rate, 2)
+		fx_deduction_jod = flt(fx_loss * exchange_rate, 3)
+		discount_deduction_jod = flt(discount_amount * exchange_rate, 3)
 		
-		fx_deduction_usd = flt(fx_deduction_jod / exchange_rate, 2)
-		discount_deduction_usd = flt(discount_deduction_jod / exchange_rate, 2)
+		fx_deduction_usd = flt(fx_deduction_jod / exchange_rate, 3)
+		discount_deduction_usd = flt(discount_deduction_jod / exchange_rate, 3)
 		
-		paid_amount = flt(total_allocated - fx_deduction_usd - discount_deduction_usd, 2)
+		paid_amount = flt(total_allocated - fx_deduction_usd - discount_deduction_usd, 3)
 		
-		base_paid_amount = flt(paid_amount * exchange_rate, 2)
+		base_paid_amount = flt(paid_amount * exchange_rate, 3)
 
 		# final_difference = base_paid_amount - (data["total_paid"] * exchange_rate - fx_deduction_jod - discount_deduction_jod)
 		# if abs(final_difference) <= 0.01:
@@ -308,7 +310,7 @@ class SupplierReconciliationProcess(Document):
 				"account": data["fx_account"],
 				"cost_center": data["cost_center"],
 				"amount": -fx_deduction_jod,
-				"is_exchange_gain_loss": 1,
+				# "is_exchange_gain_loss": 1,
 				"description": data["description"]
 			})
 
