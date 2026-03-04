@@ -303,7 +303,21 @@ class SupplierReconciliationProcess(Document):
 		pe.custom_supp_recon_ref = self.name
 
 		for ref in references:
-			pe.append("references", ref)
+			latest_outstanding = frappe.db.get_value(
+				ref["reference_doctype"],
+				ref["reference_name"],
+				"outstanding_amount"
+			)
+
+			allocated = flt(min(ref["allocated_amount"], latest_outstanding), 6)
+
+			pe.append("references", {
+				"reference_doctype": ref["reference_doctype"],
+				"reference_name": ref["reference_name"],
+				"total_amount": ref["total_amount"],
+				"outstanding_amount": latest_outstanding,
+				"allocated_amount": allocated
+			})
 
 		if fx_loss > 0:
 			pe.append("deductions", {
